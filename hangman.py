@@ -1,6 +1,9 @@
+__author__ = 'user'
+
+
+import random
 #!/usr/bin/env python3.4
 # -*- coding: utf-8 -*-
-import random
 
 HANGMANPICS = ['''
 
@@ -59,9 +62,11 @@ HANGMANPICS = ['''
  / \  |
       |
 =========''']
+
+
 def readfile(filename):
-	file = open(filename, 'r')
-	return file.read().split()
+    file = open(filename, 'r')
+    return file.read().split()
 
 words = readfile('animal.txt')
 
@@ -124,22 +129,36 @@ def checkWrongAnswer(missedLetters, secretWord):
     if len(missedLetters) == len(HANGMANPICS) - 1:
         return True
     return False
-            
+
 def main():
     """Main application entry point."""
-    print('H A N G M A N messege addition from kjh')
+
+    scorerank = []
+
+    print('H A N G M A N')
     missedLetters = ''
     correctLetters = ''
     gameSucceeded = False
     gameFailed = False
     secretWord = getRandomWord(words)
+    point = 100/(len(secretWord) + 6)
 
     while True:
         displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord)
 
         if gameSucceeded or gameFailed:
+
+            score = (len(correctLetters) + 6 - len(missedLetters))*point
+            scorerank.append(score)
+            scorerank.sort(reverse = True)
+            maxscore = scorerank[0]
+
+            print("score : " + str(score))
+            print("best score : " + str(maxscore))
+
             if gameSucceeded:
                 print('Yes! The secret word is "' + secretWord + '"! You have won!')
+
             else:
                 print('You have run out of guesses!\nAfter ' + str(len(missedLetters)) + ' missed guesses and ' + str(len(correctLetters)) + ' correct guesses, the word was "' + secretWord + '"')
 
@@ -150,8 +169,8 @@ def main():
                 gameSucceeded = False
                 gameFailed = False
                 secretWord = getRandomWord(words)
-                continue 
-            else: 
+                continue
+            else:
                 break
 
         # Let the player type in a letter.
@@ -159,9 +178,11 @@ def main():
         if guess in secretWord:
             correctLetters = correctLetters + guess
             gameSucceeded = checkCorrectAnswer(correctLetters, secretWord)
+
         else:
             missedLetters = missedLetters + guess
             gameFailed = checkWrongAnswer(missedLetters, secretWord)
+
 
 
 if __name__ == "__main__":
